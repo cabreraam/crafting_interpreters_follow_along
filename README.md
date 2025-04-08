@@ -19,3 +19,7 @@ I.e., just skip this repository and head to the complete source!
  
 - Finished 4.6 and 4.7
 - Next time start at Chapter 5:
+
+### 4/7/2025:
+ 
+- Finished through 5.2
