@@ -23,3 +23,9 @@ I.e., just skip this repository and head to the complete source!
 ### 4/7/2025:
  
 - Finished through 5.2
+
+### 4/12/2025:
+ 
+- Finished the rest of chapter 5 
+    - 5.3
+    - 5.4
