@@ -29,3 +29,7 @@ I.e., just skip this repository and head to the complete source!
 - Finished the rest of chapter 5 
     - 5.3
     - 5.4
+
+### 4/21/2025:
+ 
+- Finished the rest 6.1 and 6.2
