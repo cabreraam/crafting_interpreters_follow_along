@@ -37,3 +37,8 @@ I.e., just skip this repository and head to the complete source!
 ### 4/23/2025:
  
 - Finished the rest of Chapter 6
+
+
+### 4/24/2025:
+ 
+- Finished 7.1-7.2.4
