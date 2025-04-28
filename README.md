@@ -42,3 +42,7 @@ I.e., just skip this repository and head to the complete source!
 ### 4/24/2025:
  
 - Finished 7.1-7.2.4
+
+### 4/27/2025:
+ 
+- Finished 7.2.5
