@@ -46,3 +46,8 @@ I.e., just skip this repository and head to the complete source!
 ### 4/27/2025:
  
 - Finished 7.2.5
+
+### 5/1/2025:
+ 
+- Finished 7.3 and 7.4
+- Read up to 8.1.1
