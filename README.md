@@ -51,3 +51,9 @@ I.e., just skip this repository and head to the complete source!
  
 - Finished 7.3 and 7.4
 - Read up to 8.1.1
+
+### 5/3/2025
+- Finished 8.1.1 - 8.1.2
+
+### 6/7/2025
+- Fixed 8.1.2 and finished 8.1.3
