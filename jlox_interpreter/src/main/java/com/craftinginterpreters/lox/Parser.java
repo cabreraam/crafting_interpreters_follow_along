@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Parser {
-  private static class ParseError extends RuntimeException {}
+  private static class ParseError extends RuntimeException {
+  }
 
   private final List<Token> tokens;
   private int current = 0;
 
-  Parser(List<Token> tokens) { this.tokens = tokens; }
+  Parser(List<Token> tokens) {
+    this.tokens = tokens;
+  }
 
   List<Stmt> parse() {
     // try {
@@ -21,14 +24,32 @@ class Parser {
     // }
     List<Stmt> statements = new ArrayList<>();
     while (!isAtEnd()) {
-      statements.add(statement());
+      statements.add(declaration());
     }
 
     return statements;
   }
 
   // expression → equality ;
-  private Expr expression() { return equality(); }
+  private Expr expression() {
+    return equality();
+  }
+
+  // Note how this follows the grammar rule:
+  // declaration → varDecl
+  // | statement ;
+  // we either have a variable declaration or a statement
+  private Stmt declaration() {
+    try {
+      if (match(VAR))
+        return varDeclaration();
+
+      return statement();
+    } catch (ParseError error) {
+      synchronize();
+      return null;
+    }
+  }
 
   private Stmt statement() {
     if (match(PRINT)) {
@@ -42,6 +63,23 @@ class Parser {
     Expr value = expression();
     consume(SEMICOLON, "Expect ';' after value.");
     return new Stmt.Print(value);
+  }
+
+  private Stmt varDeclaration() {
+    Token name = consume(IDENTIFIER, "Expect variable name.");
+
+    // recall that you don't need to _define_ the variable
+    // varDecl → "var" IDENTIFIER ( "=" expression )? ";" ;
+    // if you don't want to define the variable, the parser allows for skipping
+    // the definition but still expects an ending semicolon.
+    Expr initializer = null;
+    if (match(EQUAL)) {
+      initializer = expression();
+    }
+
+    consume(SEMICOLON, "Expect ';' after variable declaration.");
+    // create a Stmt.Var AST node to represent this new variable declaration
+    return new Stmt.Var(name, initializer);
   }
 
   private Stmt expressionStatement() {
@@ -128,6 +166,10 @@ class Parser {
       return new Expr.Literal(previous().literal);
     }
 
+    if (match(IDENTIFIER)) {
+      return new Expr.Variable(previous());
+    }
+
     if (match(LEFT_PAREN)) {
       Expr expr = expression();
       consume(RIGHT_PAREN, "Expect ')' after expression.");
@@ -167,11 +209,17 @@ class Parser {
     return previous();
   }
 
-  private boolean isAtEnd() { return peek().type == EOF; }
+  private boolean isAtEnd() {
+    return peek().type == EOF;
+  }
 
-  private Token peek() { return tokens.get(current); }
+  private Token peek() {
+    return tokens.get(current);
+  }
 
-  private Token previous() { return tokens.get(current - 1); }
+  private Token previous() {
+    return tokens.get(current - 1);
+  }
 
   private ParseError error(Token token, String message) {
     Lox.error(token, message);
@@ -186,16 +234,16 @@ class Parser {
         return;
 
       switch (peek().type) {
-      case CLASS:
-      case FUN:
-      case VAR:
-      case FOR:
-      case IF:
-      case WHILE:
-      case PRINT:
-      case RETURN:
-        return;
-      default:
+        case CLASS:
+        case FUN:
+        case VAR:
+        case FOR:
+        case IF:
+        case WHILE:
+        case PRINT:
+        case RETURN:
+          return;
+        default:
       }
 
       advance();

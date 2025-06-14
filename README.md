@@ -57,3 +57,6 @@ I.e., just skip this repository and head to the complete source!
 
 ### 6/7/2025
 - Fixed 8.1.2 and finished 8.1.3
+
+### 6/14/2025
+- finished 8.1.3 and all of 8.2
