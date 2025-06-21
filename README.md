@@ -64,3 +64,6 @@ I.e., just skip this repository and head to the complete source!
 
 ### 6/14/2025
 - finished 8.4
+
+### 6/21/2025
+- finished 8.5

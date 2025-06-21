@@ -51,6 +51,10 @@ class Parser {
       return printStatement();
     }
 
+    if (match(LEFT_BRACE)) {
+      return new Stmt.Block(block());
+    }
+
     return expressionStatement();
   }
 
@@ -81,6 +85,23 @@ class Parser {
     Expr expr = expression();
     consume(SEMICOLON, "Expect ';' after value.");
     return new Stmt.Expression(expr);
+  }
+
+  // block → "{" declaration* "}" ;
+  private List<Stmt> block() {
+    List<Stmt> statements = new ArrayList<>();
+
+    // This is the `declaration*` part of the grammar production ;
+    // note the isAtEnd() check
+    // - don't want to create an infinite loop if user forgets a
+    // closing curly brace!
+    while (!check(RIGHT_BRACE) && !isAtEnd()) {
+      statements.add(declaration());
+    }
+
+    // closing brace part of production
+    consume(RIGHT_BRACE, "Expect '}' after block.");
+    return statements;
   }
 
   private Expr assignment() {
