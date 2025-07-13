@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Parser {
-  private static class ParseError extends RuntimeException {}
+  private static class ParseError extends RuntimeException {
+  }
 
   private final List<Token> tokens;
   private int current = 0;
 
-  Parser(List<Token> tokens) { this.tokens = tokens; }
+  Parser(List<Token> tokens) {
+    this.tokens = tokens;
+  }
 
   List<Stmt> parse() {
     // try {
@@ -28,7 +31,9 @@ class Parser {
   }
 
   // expression → equality ;
-  private Expr expression() { return equality(); }
+  private Expr expression() {
+    return equality();
+  }
 
   // Note how this follows the grammar rule:
   // declaration → varDecl
@@ -47,6 +52,9 @@ class Parser {
   }
 
   private Stmt statement() {
+    if (match(IF)) {
+      return ifStatement();
+    }
     if (match(PRINT)) {
       return printStatement();
     }
@@ -56,6 +64,20 @@ class Parser {
     }
 
     return expressionStatement();
+  }
+
+  private Stmt ifStatement() {
+    consume(LEFT_PAREN, "Expect '(' after 'if'.");
+    Expr condition = expression();
+    consume(RIGHT_PAREN, "Expect ')' after if condition.");
+
+    Stmt thenBranch = statement();
+    Stmt elseBranch = null;
+    if (match(ELSE)) {
+      elseBranch = statement();
+    }
+
+    return new Stmt.If(condition, thenBranch, elseBranch);
   }
 
   private Stmt printStatement() {
@@ -112,7 +134,7 @@ class Parser {
       Expr value = assignment();
 
       if (expr instanceof Expr.Variable) {
-        Token name = ((Expr.Variable)expr).name;
+        Token name = ((Expr.Variable) expr).name;
         return new Expr.Assign(name, value);
       }
 
@@ -243,11 +265,17 @@ class Parser {
     return previous();
   }
 
-  private boolean isAtEnd() { return peek().type == EOF; }
+  private boolean isAtEnd() {
+    return peek().type == EOF;
+  }
 
-  private Token peek() { return tokens.get(current); }
+  private Token peek() {
+    return tokens.get(current);
+  }
 
-  private Token previous() { return tokens.get(current - 1); }
+  private Token previous() {
+    return tokens.get(current - 1);
+  }
 
   private ParseError error(Token token, String message) {
     Lox.error(token, message);
@@ -262,16 +290,16 @@ class Parser {
         return;
 
       switch (peek().type) {
-      case CLASS:
-      case FUN:
-      case VAR:
-      case FOR:
-      case IF:
-      case WHILE:
-      case PRINT:
-      case RETURN:
-        return;
-      default:
+        case CLASS:
+        case FUN:
+        case VAR:
+        case FOR:
+        case IF:
+        case WHILE:
+        case PRINT:
+        case RETURN:
+          return;
+        default:
       }
 
       advance();
