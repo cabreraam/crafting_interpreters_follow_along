@@ -31,11 +31,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object right = evaluate(expr.right);
 
     switch (expr.operator.type) {
-      case BANG:
-        return !isTruthy(right);
-      case MINUS:
-        checkNumberOperand(expr.operator, right);
-        return -(double) right;
+    case BANG:
+      return !isTruthy(right);
+    case MINUS:
+      checkNumberOperand(expr.operator, right);
+      return -(double)right;
     }
 
     // Unreachable.
@@ -65,13 +65,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     return evaluate(expr.expression);
   }
 
-  private Object evaluate(Expr expr) {
-    return expr.accept(this);
-  }
+  private Object evaluate(Expr expr) { return expr.accept(this); }
 
-  private void execute(Stmt stmt) {
-    stmt.accept(this);
-  }
+  private void execute(Stmt stmt) { stmt.accept(this); }
 
   /*
    * We want to execute statements of an input block in the environment of
@@ -140,11 +136,21 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     return value;
   }
 
+  /*
+   * The Lox way of determining what is true and false when you use something
+   * other that the primitive "b"oolean true or false.
+   *
+   * - If the object is null, call it false.
+   * - If the object is an instance of the class Boolean, unbox it to the
+   * primitive boolean type.
+   * - Everyting else is true.
+   *
+   */
   private boolean isTruthy(Object object) {
     if (object == null)
       return false;
     if (object instanceof Boolean)
-      return (boolean) object;
+      return (boolean)object;
     return true;
   }
 
@@ -179,43 +185,43 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object right = evaluate(expr.right);
 
     switch (expr.operator.type) {
-      case GREATER:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left > (double) right;
-      case GREATER_EQUAL:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left >= (double) right;
-      case LESS:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left < (double) right;
-      case LESS_EQUAL:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left <= (double) right;
-      case MINUS:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left - (double) right;
-      case PLUS:
-        if (left instanceof Double && right instanceof Double) {
-          return (double) left + (double) right;
-        }
+    case GREATER:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left > (double)right;
+    case GREATER_EQUAL:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left >= (double)right;
+    case LESS:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left < (double)right;
+    case LESS_EQUAL:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left <= (double)right;
+    case MINUS:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left - (double)right;
+    case PLUS:
+      if (left instanceof Double && right instanceof Double) {
+        return (double)left + (double)right;
+      }
 
-        if (left instanceof String && right instanceof String) {
-          return (String) left + (String) right;
-        }
+      if (left instanceof String && right instanceof String) {
+        return (String)left + (String)right;
+      }
 
-        throw new RuntimeError(expr.operator,
-            "Operands must be two numbers or two strings.");
+      throw new RuntimeError(expr.operator,
+                             "Operands must be two numbers or two strings.");
 
-      case SLASH:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left / (double) right;
-      case STAR:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left * (double) right;
-      case BANG_EQUAL:
-        return !isEqual(left, right);
-      case EQUAL_EQUAL:
-        return isEqual(left, right);
+    case SLASH:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left / (double)right;
+    case STAR:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left * (double)right;
+    case BANG_EQUAL:
+      return !isEqual(left, right);
+    case EQUAL_EQUAL:
+      return isEqual(left, right);
     }
 
     // Unreachable.
