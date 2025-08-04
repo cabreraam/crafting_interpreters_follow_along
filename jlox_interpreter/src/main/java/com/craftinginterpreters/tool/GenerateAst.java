@@ -12,13 +12,15 @@ public class GenerateAst {
       System.exit(64);
     }
     String outputDir = args[0];
-    defineAst(outputDir, "Expr",
-        Arrays.asList(
-            "Assignment : Token name, Expr value",
-            "Binary     : Expr left, Token operator, Expr right",
-            "Grouping   : Expr expression", "Literal    : Object value",
-            "Unary      : Token operator, Expr right",
-            "Variable   : Token name"));
+    defineAst(
+        outputDir, "Expr",
+        Arrays.asList("Assignment : Token name, Expr value",
+                      "Binary     : Expr left, Token operator, Expr right",
+                      "Grouping   : Expr expression",
+                      "Logical    : Expr left, Token operator, Expr right",
+                      "Literal    : Object value",
+                      "Unary      : Token operator, Expr right",
+                      "Variable   : Token name"));
     defineAst(
         outputDir, "Stmt",
         Arrays.asList(
@@ -30,20 +32,20 @@ public class GenerateAst {
   }
 
   private static void defineVisitor(PrintWriter writer, String baseName,
-      List<String> types) {
+                                    List<String> types) {
     writer.println("  interface Visitor<R> {");
 
     for (String type : types) {
       String typeName = type.split(":")[0].trim();
       writer.println("    R visit" + typeName + baseName + "(" + typeName +
-          " " + baseName.toLowerCase() + ");");
+                     " " + baseName.toLowerCase() + ");");
     }
 
     writer.println("  }");
   }
 
   private static void defineAst(String outputDir, String baseName,
-      List<String> types) throws IOException {
+                                List<String> types) throws IOException {
     String path = outputDir + "/" + baseName + ".java";
     PrintWriter writer = new PrintWriter(path, "UTF-8");
 
@@ -71,9 +73,9 @@ public class GenerateAst {
   }
 
   private static void defineType(PrintWriter writer, String baseName,
-      String className, String fieldList) {
+                                 String className, String fieldList) {
     writer.println("  static class " + className + " extends " + baseName +
-        " {");
+                   " {");
 
     // Constructor.
     writer.println("    " + className + "(" + fieldList + ") {");
@@ -92,7 +94,7 @@ public class GenerateAst {
     writer.println("    @Override");
     writer.println("    <R> R accept(Visitor<R> visitor) {");
     writer.println("      return visitor.visit" + className + baseName +
-        "(this);");
+                   "(this);");
     writer.println("    }");
 
     // Fields.
