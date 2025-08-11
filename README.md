@@ -70,3 +70,6 @@ I.e., just skip this repository and head to the complete source!
 
 ### 7/13/2025
 - finished 9.1-9.2
+
+### 8/10/2025
+- finished 9.3-9.4
