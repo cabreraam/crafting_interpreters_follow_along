@@ -50,6 +50,9 @@ class Parser {
     if (match(IF)) {
       return ifStatement();
     }
+    if (match(WHILE)) {
+      return whileStatement();
+    }
     if (match(PRINT)) {
       return printStatement();
     }
@@ -97,6 +100,18 @@ class Parser {
     consume(SEMICOLON, "Expect ';' after variable declaration.");
     // create a Stmt.Var AST node to represent this new variable declaration
     return new Stmt.Var(name, initializer);
+  }
+
+  // whileStmt → "while" "(" expression ")" statement ;
+  private Stmt whileStatement() {
+    consume(LEFT_PAREN, "Expect '(' after 'while'.");
+
+    Expr condition = expression();
+
+    consume(RIGHT_PAREN, "Expect ')' after condition.");
+
+    Stmt block = statement();
+    return Stmt.While(condition, block);
   }
 
   private Stmt expressionStatement() {
