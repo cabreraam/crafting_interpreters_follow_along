@@ -3,6 +3,7 @@ package com.craftinginterpreters.lox;
 import static com.craftinginterpreters.lox.TokenType.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class Parser {
@@ -47,6 +48,9 @@ class Parser {
   }
 
   private Stmt statement() {
+    if (match(FOR)) {
+      return forStatement();
+    }
     if (match(IF)) {
       return ifStatement();
     }
@@ -62,6 +66,57 @@ class Parser {
     }
 
     return expressionStatement();
+  }
+
+  // forStmt → "for" "(" ( varDecl | exprStmt | ";" )
+  // expression? ";"
+  // expression? ")" statement ;
+  private Stmt forStatement() {
+    consume(LEFT_PAREN, "Expect '(' after 'for'.");
+
+    Stmt initializer;
+    // check to see if varDecl or exprStmt or ";"
+    if (match(SEMICOLON)) {
+      initializer = null;
+    } else if (match(VAR)) {
+      initializer = varDeclaration();
+    } else { // match(IDENTIFIER)
+      initializer = expressionStatement();
+    }
+
+    // handle condition
+    Expr condition = null;
+    if (!check(SEMICOLON)) {
+      condition = expression();
+    }
+    consume(SEMICOLON, "Expect ';' after loop condition.");
+
+    // handle increment
+    Expr increment = null;
+    if (!check(RIGHT_PAREN)) {
+      increment = expression();
+    }
+    consume(RIGHT_PAREN, "Expect ')' after 'for' clauses.");
+
+    Stmt body = statement();
+
+    // if there is an increment present, it should execute after the `for` body
+    if (increment != null) {
+      body =
+          new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
+    }
+
+    // create condition if there is one
+    if (condition == null) {
+      condition = new Expr.Literal(true);
+    }
+    body = new Stmt.While(condition, body);
+
+    if (initializer != null) {
+      body = new Stmt.Block(Arrays.asList(initializer, body));
+    }
+
+    return body;
   }
 
   private Stmt ifStatement() {
@@ -111,7 +166,7 @@ class Parser {
     consume(RIGHT_PAREN, "Expect ')' after condition.");
 
     Stmt block = statement();
-    return Stmt.While(condition, block);
+    return new Stmt.While(condition, block);
   }
 
   private Stmt expressionStatement() {
