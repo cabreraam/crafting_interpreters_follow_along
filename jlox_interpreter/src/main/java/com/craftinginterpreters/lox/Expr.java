@@ -44,8 +44,8 @@ abstract class Expr {
     final Expr right;
   }
   static class Call extends Expr {
-    Call(Expr operator, Token paren, List<Expr> arguments) {
-      this.operator = operator;
+    Call(Expr callee, Token paren, List<Expr> arguments) {
+      this.callee = callee;
       this.paren = paren;
       this.arguments = arguments;
     }
@@ -55,7 +55,7 @@ abstract class Expr {
       return visitor.visitCallExpr(this);
     }
 
-    final Expr operator;
+    final Expr callee;
     final Token paren;
     final List<Expr> arguments;
   }
