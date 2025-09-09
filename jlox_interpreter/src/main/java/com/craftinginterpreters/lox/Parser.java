@@ -301,9 +301,13 @@ class Parser {
 
   // arguments → expression ( "," expression )* ;
   private Expr finishCall(Expr callee) {
+    int maxArgs = 255;
     List<Expr> arguments = new ArrayList<>();
     if (!check(RIGHT_PAREN)) {
       do {
+        if (arguments.size() >= maxArgs) {
+          error(peek(), "Can't have more than " + maxArgs + " arguments.");
+        }
         arguments.add(expression());
       } while (match(COMMA));
     }
