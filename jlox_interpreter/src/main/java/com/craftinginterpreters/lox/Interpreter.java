@@ -254,6 +254,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
   @Override
   public Object visitCallExpr(Expr.Call expr) {
+    if (!(expr.callee instanceof LoxCallable)) {
+      throw new RuntimeError(expr.paren,
+                             "Can only call functions and classes.");
+    }
+
     Object callee = evaluate(expr.callee);
 
     List<Object> arguments = new ArrayList<>();
