@@ -32,11 +32,13 @@ class Parser {
   private Expr expression() { return assignment(); }
 
   // Note how this follows the grammar rule:
-  // declaration → varDecl
-  // | statement ;
+  // declaration → funDecl | varDecl | statement ;
   // we either have a variable declaration or a statement
   private Stmt declaration() {
     try {
+      if (match(FUN)) {
+        return function("function");
+      }
       if (match(VAR))
         return varDeclaration();
 
@@ -173,6 +175,25 @@ class Parser {
     Expr expr = expression();
     consume(SEMICOLON, "Expect ';' after value.");
     return new Stmt.Expression(expr);
+  }
+
+  private Stmt.Function function(String kind) {
+    Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
+
+    List<Token> parameters = new ArrayList<>();
+    if (!(check(LEFT_PAREN))) {
+      do {
+        if (parameters.size() >= 255) {
+          error(peek(), "Can't have more than 255 parameters.");
+        }
+        parameters.add(consume(IDENTIFIER, "Expect parameter name."));
+      } while (match(COMMA));
+    }
+    consume(RIGHT_PAREN, "Expect ')' after parameters.");
+
+    consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
+    List<Stmt> body = block();
+    return new Stmt.Function(name, parameters, body);
   }
 
   // block → "{" declaration* "}" ;
