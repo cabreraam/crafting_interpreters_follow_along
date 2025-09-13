@@ -62,6 +62,9 @@ public class Lox {
 
     Parser parser = new Parser(tokens);
     List<Stmt> statements = parser.parse();
+    for (int i = 0; i < statements.size(); i++) {
+      System.out.println(statements.get(i).toString());
+    }
 
     // Stop if there was a syntax error.
     if (hadError)
