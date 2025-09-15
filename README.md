@@ -82,3 +82,12 @@ I.e., just skip this repository and head to the complete source!
 
 ### 9/10/2025
 - finished through 10.3
+
+### 9/12/2025
+- finished preamble of 10.4
+
+### 9/12/2025
+- finished through 10.4.1
+
+### 9/15/2025
+- finished through 10.5.1
