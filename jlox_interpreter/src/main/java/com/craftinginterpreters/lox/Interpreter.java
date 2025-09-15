@@ -27,7 +27,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
       @Override
       public Object call(Interpreter interpreter, List<Object> arguments) {
-        return (double) System.currentTimeMillis() / 1000.0;
+        return (double)System.currentTimeMillis() / 1000.0;
       }
 
       @Override
@@ -72,11 +72,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object right = evaluate(expr.right);
 
     switch (expr.operator.type) {
-      case BANG:
-        return !isTruthy(right);
-      case MINUS:
-        checkNumberOperand(expr.operator, right);
-        return -(double) right;
+    case BANG:
+      return !isTruthy(right);
+    case MINUS:
+      checkNumberOperand(expr.operator, right);
+      return -(double)right;
     }
 
     // Unreachable.
@@ -106,13 +106,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     return evaluate(expr.expression);
   }
 
-  private Object evaluate(Expr expr) {
-    return expr.accept(this);
-  }
+  private Object evaluate(Expr expr) { return expr.accept(this); }
 
-  private void execute(Stmt stmt) {
-    stmt.accept(this);
-  }
+  private void execute(Stmt stmt) { stmt.accept(this); }
 
   /*
    * We want to execute statements of an input block in the environment of
@@ -164,6 +160,18 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Void visitReturnStmt(Stmt.Return stmt) {
+    Object value = null;
+    if (stmt.value != null)
+      value = evaluate(stmt.value);
+
+    // since a return stmt might happen in the middle of a f'n body, we thrown
+    // an exception that will be caught by the call function in the
+    // visitCallExpr function
+    throw new Return(value);
+  }
+
+  @Override
   public Void visitVarStmt(Stmt.Var stmt) {
     Object value = null;
     if (stmt.initializer != null) {
@@ -203,7 +211,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     if (object == null)
       return false;
     if (object instanceof Boolean)
-      return (boolean) object;
+      return (boolean)object;
     return true;
   }
 
@@ -238,43 +246,43 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object right = evaluate(expr.right);
 
     switch (expr.operator.type) {
-      case GREATER:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left > (double) right;
-      case GREATER_EQUAL:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left >= (double) right;
-      case LESS:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left < (double) right;
-      case LESS_EQUAL:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left <= (double) right;
-      case MINUS:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left - (double) right;
-      case PLUS:
-        if (left instanceof Double && right instanceof Double) {
-          return (double) left + (double) right;
-        }
+    case GREATER:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left > (double)right;
+    case GREATER_EQUAL:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left >= (double)right;
+    case LESS:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left < (double)right;
+    case LESS_EQUAL:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left <= (double)right;
+    case MINUS:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left - (double)right;
+    case PLUS:
+      if (left instanceof Double && right instanceof Double) {
+        return (double)left + (double)right;
+      }
 
-        if (left instanceof String && right instanceof String) {
-          return (String) left + (String) right;
-        }
+      if (left instanceof String && right instanceof String) {
+        return (String)left + (String)right;
+      }
 
-        throw new RuntimeError(expr.operator,
-            "Operands must be two numbers or two strings.");
+      throw new RuntimeError(expr.operator,
+                             "Operands must be two numbers or two strings.");
 
-      case SLASH:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left / (double) right;
-      case STAR:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left * (double) right;
-      case BANG_EQUAL:
-        return !isEqual(left, right);
-      case EQUAL_EQUAL:
-        return isEqual(left, right);
+    case SLASH:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left / (double)right;
+    case STAR:
+      checkNumberOperands(expr.operator, left, right);
+      return (double)left * (double)right;
+    case BANG_EQUAL:
+      return !isEqual(left, right);
+    case EQUAL_EQUAL:
+      return isEqual(left, right);
     }
 
     // Unreachable.
@@ -287,7 +295,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     if (!(callee instanceof LoxCallable)) {
       throw new RuntimeError(expr.paren,
-          "Can only call functions and classes.");
+                             "Can only call functions and classes.");
     }
 
     List<Object> arguments = new ArrayList<>();
@@ -295,11 +303,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       arguments.add(evaluate(argument));
     }
 
-    LoxCallable function = (LoxCallable) callee;
+    LoxCallable function = (LoxCallable)callee;
     if (arguments.size() != function.arity()) {
       throw new RuntimeError(expr.paren, "Expected " + function.arity() +
-          " arguments but got " +
-          arguments.size() + ".");
+                                             " arguments but got " +
+                                             arguments.size() + ".");
     }
     return function.call(this, arguments);
   }
