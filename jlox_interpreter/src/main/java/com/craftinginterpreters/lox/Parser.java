@@ -324,7 +324,7 @@ class Parser {
     return expr;
   }
 
-  // unary → ( "!" | "-" ) unary
+  // unary → ( "!" | "-" ) unary | call ;
   private Expr unary() {
     if (match(BANG, MINUS)) {
       Token operator = previous();
