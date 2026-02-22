@@ -91,3 +91,6 @@ I.e., just skip this repository and head to the complete source!
 
 ### 9/15/2025
 - finished through 10.5.1
+
+### 2/22/2026
+- finished through 10.6, thus completing chapter 10
